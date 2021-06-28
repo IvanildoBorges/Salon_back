@@ -1,0 +1,34 @@
+{
+  "name": "api-rest",
+  "version": "1.0.0",
+  "description": "API REST nodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanildoBorges/App_Salon.git"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "node"
+  ],
+  "author": "Ivanildo Borges",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvanildoBorges/App_Salon/issues"
+  },
+  "homepage": "https://github.com/IvanildoBorges/App_Salon#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
