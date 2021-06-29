@@ -10,7 +10,6 @@ router.get('/', (req, res, next) => {
 
 //INSERE UM FUNCIONARIO
 router.post('/', (req, res, next) => {
-
     const funcionario = {
         nome: req.body.nome,
         empresa: req.body.empresa,

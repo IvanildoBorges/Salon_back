@@ -4,6 +4,7 @@ const morgan = require("morgan");               //Importa a biblioteca morga par
 
 //importandos as rotas
 const rotaFuncionarios = require('./routes/funcionarios');
+const rotaServicos = require('./routes/servicos');
 
 //Monitora a execucao das rotas para dar um callback (log)
 app.use(morgan('dev')); 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 
 //Acionando as rotas
 app.use('/funcionarios', rotaFuncionarios);
+app.use('/servicos', rotaServicos);
 app.use((req, res, next) => {
     const erro = new Error("Não encontrado!");
     erro.status = 404;
