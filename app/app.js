@@ -3,7 +3,8 @@ const app = express();                          //Cria uma instancia do express 
 const morgan = require("morgan");               //Importa a biblioteca morga para dar um callback
 
 //importandos as rotas
-const rotaFuncionarios = require('./routes/funcionarios');
+const rotaFuncionario = require('./routes/funcionario');
+const rotaCliente = require('./routes/cliente');
 const rotaServicos = require('./routes/servicos');
 
 //Monitora a execucao das rotas para dar um callback (log)
@@ -32,7 +33,8 @@ app.use((req, res, next) => {
 });
 
 //Acionando as rotas
-app.use('/funcionarios', rotaFuncionarios);
+app.use('/funcionario', rotaFuncionario);
+app.use('/cliente', rotaCliente);
 app.use('/servicos', rotaServicos);
 app.use((req, res, next) => {
     const erro = new Error("Não encontrado!");

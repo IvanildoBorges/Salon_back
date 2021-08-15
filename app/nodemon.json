@@ -1,9 +1,11 @@
 {
     "env": {
         "MYSQL_USER": "root",
-        "MYSQL_PASSWORD": "",
+        "MYSQL_PASSWORD": "root",
         "MYSQL_DATABASE": "app_salon",
         "MYSQL_HOST": "localhost",
-        "MYSQL_PORT": 3306
+        "MYSQL_PORT": 3306,
+
+        "JWT_KEY": "4ShzFZZpMp_FTw9_TL2EAGC-FxNgo9-6SXiBxaLo"
     }
 }
