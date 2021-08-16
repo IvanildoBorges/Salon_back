@@ -7,13 +7,13 @@ const bcrypt = require('bcrypt');
 // LISTAR TODOS OS CLIENTES:
 router.get('/', (req, res, next) => {
     mysql.getConnection((error, conn) => {
-        if (error) { 
+        if (error) {
             return res.status(500).send({ error: error});
         }
         conn.query(
             'SELECT * FROM cliente;',
             (error, resultado, fields) => {
-                if (error) { 
+                if (error) {
                     return res.status(500).send({ error: error});
                 }
                 return res.status(200).send({response: resultado})
@@ -24,8 +24,8 @@ router.get('/', (req, res, next) => {
 
 //LISTAR UM CLIENTE ESPECIFICO
 router.get('/:id', (req, res, next) => {
-    mysql.getConnection((error, conn) => { 
-        if (error) { 
+    mysql.getConnection((error, conn) => {
+        if (error) {
             return res.status(500).send({ error: error });
         }
 
@@ -45,13 +45,13 @@ router.get('/:id', (req, res, next) => {
 // CRIAR CLIENTES:
 router.post('/cadastro', (req, res, next) => {
     mysql.getConnection((error, conn) => {
-        if (error) { 
-            return res.status(500).send({ 
+        if (error) {
+            return res.status(500).send({
                 error: error
             });
         }
         conn.query(
-            'SELECT * FROM cliente WHERE email=?', 
+            'SELECT * FROM cliente WHERE email=?',
             [req.body.email],
             (error, results) => {
                 if (error) { return res.status(500).send({ error: error }); }
@@ -60,7 +60,7 @@ router.post('/cadastro', (req, res, next) => {
                 } else {
                     bcrypt.hash(req.body.senha, 10, (errBcrypt, hash) => {
                         if (errBcrypt) {
-                            return res.status(500).send({ 
+                            return res.status(500).send({
                                 error: errBcrypt
                             });
                         }
@@ -71,7 +71,7 @@ router.post('/cadastro', (req, res, next) => {
                                 conn.release();
                                 if (error) {
                                     res.status(500).send({
-                                        error: error, 
+                                        error: error,
                                         response: null
                                     });
                                 }
@@ -102,12 +102,12 @@ router.put('/:id', (req, res, next) => {
             return res.status(500).send({ error: error})
         }
         conn.query(
-            `UPDATE cliente 
+            `UPDATE cliente
             SET nome = ?, endereco = ?, email = ?, senha = ?
             WHERE id = ?`,
             [
                 req.body.nome,
-                req.body.endereco, 
+                req.body.endereco,
                 req.body.email,
                 req.body.senha,
                 req.params.id
@@ -148,23 +148,5 @@ router.delete('/:id', (req, res, next) => {
     });
 });
 
-router.post('/login', (req, res, next) => {
-    mysql.getConnection((error, conn) => {
-        if (error) {
-            return res.status(500).send({ error: error });
-        }
-        const query = `SELECT * FROM cliente WHERE email=?`;
-        conn.query(query, [req.body.email], (error, results, fileds) => {
-            conn.release();
-            if (error) { return res.status(500).send({ error: error }); }
-            if (results.length < 1) {
-                return res.status(401).send({
-                    mensagem: 'Falha na autenticação'
-                });
-            }
-        });
-    });
-});
-
 //Exportando a rota
-module.exports = router; 
+module.exports = router;

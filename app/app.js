@@ -6,9 +6,10 @@ const morgan = require("morgan");               //Importa a biblioteca morga par
 const rotaFuncionario = require('./routes/funcionario');
 const rotaCliente = require('./routes/cliente');
 const rotaServicos = require('./routes/servicos');
+const rotaAutenticacao = require('./routes/auth');
 
 //Monitora a execucao das rotas para dar um callback (log)
-app.use(morgan('dev')); 
+app.use(morgan('dev'));
 
 //Permiti apenas dados simples, como json na entrada do body
 app.use(express.urlencoded({ extended: false }));
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 app.use('/funcionario', rotaFuncionario);
 app.use('/cliente', rotaCliente);
 app.use('/servicos', rotaServicos);
+app.use('/auth', rotaAutenticacao);
 app.use((req, res, next) => {
     const erro = new Error("Não encontrado!");
     erro.status = 404;
