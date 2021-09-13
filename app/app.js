@@ -3,8 +3,9 @@ const app = express();                          //Cria uma instancia do express 
 const morgan = require("morgan");               //Importa a biblioteca morga para dar um callback
 
 //importandos as rotas
-const rotaFuncionario = require('./routes/funcionario');
-const rotaCliente = require('./routes/cliente');
+const rotaUsuario = require('./routes/usuario');
+// const rotaFuncionario = require('./routes/funcionario');
+// const rotaCliente = require('./routes/cliente');
 const rotaServicos = require('./routes/servicos');
 const rotaAutenticacao = require('./routes/auth');
 
@@ -34,12 +35,13 @@ app.use((req, res, next) => {
 });
 
 //Acionando as rotas
-app.use('/funcionario', rotaFuncionario);
-app.use('/cliente', rotaCliente);
+// app.use('/funcionario', rotaFuncionario);
+// app.use('/cliente', rotaCliente);
+app.use('/usuario', rotaUsuario);
 app.use('/servicos', rotaServicos);
 app.use('/auth', rotaAutenticacao);
 app.use((req, res, next) => {
-    const erro = new Error("Não encontrado!");
+    const erro = new Error('Não encontrado!');
     erro.status = 404;
     next(erro);
 });
