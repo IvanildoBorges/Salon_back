@@ -4,8 +4,6 @@ const morgan = require("morgan");               //Importa a biblioteca morga par
 
 //importandos as rotas
 const rotaUsuario = require('./routes/usuario');
-// const rotaFuncionario = require('./routes/funcionario');
-// const rotaCliente = require('./routes/cliente');
 const rotaServicos = require('./routes/servicos');
 const rotaAutenticacao = require('./routes/auth');
 
