@@ -1,7 +1,7 @@
 const express = require('express');
 const nodemon = require('nodemon');
 const router = express.Router();
-const authentic = require('../middleware/login');
+const authentic = require('../controllers/authorization-controller');
 
 //Importando controladores da rota usuario
 const UsuarioController = require('../controllers/usuario-controller');

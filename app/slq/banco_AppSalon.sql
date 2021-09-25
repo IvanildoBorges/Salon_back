@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `app_salon`.`Pessoa` (
   `endereco` VARCHAR(100) NOT NULL,
   `email` VARCHAR(50) NOT NULL,
   `senha` VARCHAR(100) NOT NULL,
-  `avatar` LONGBLOB NOT NULL, 
+  `avatar` LONGBLOB, 
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -87,9 +87,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `app_salon`.`Agenda` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `data` DATE NOT NULL,
-  `diaDaSemana` VARCHAR(45) NOT NULL,
-  `hora` INT NOT NULL,
-  `minuto` INT NOT NULL,
+  `hora` TIME NOT NULL,
   `temVaga` TINYINT NOT NULL DEFAULT 0,
   `empresa` INT NOT NULL,
   PRIMARY KEY (`id`),
@@ -185,12 +183,19 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `app_salon`.`favoritos` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `Cliente_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `Cliente_id`),
-  INDEX `fk_favoritos_Cliente1_idx` (`Cliente_id` ASC) VISIBLE,
-  CONSTRAINT `fk_favoritos_Cliente1`
-    FOREIGN KEY (`Cliente_id`)
+  `cliente` INT NOT NULL,
+  `servico` INT NOT NULL,
+  PRIMARY KEY (`id`, `cliente`),
+  INDEX `fk_favoritos_cliente_idx` (`cliente` ASC) VISIBLE,
+  INDEX `fk_favoritos_servico_idx` (`servico` ASC) VISIBLE,
+  CONSTRAINT `fk_favoritos_cliente`
+    FOREIGN KEY (`cliente`)
     REFERENCES `app_salon`.`Cliente` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_favoritos_servico`
+    FOREIGN KEY (`servico`)
+    REFERENCES `app_salon`.`Servicos` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -218,6 +223,13 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `app_salon`.`feedback` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `Pessoa_id` INT NOT NULL,
+  `funcionario` VARCHAR(50) NOT NULL,
+  `servico` VARCHAR(45) NOT NULL,
+  `preco` FLOAT NOT NULL,
+  `data` DATE NOT NULL,
+  `hora` INT NOT NULL,
+  `minuto` INT NOT NULL,
+  `comentario` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`, `Pessoa_id`),
   INDEX `fk_feedback_Pessoa1_idx` (`Pessoa_id` ASC) VISIBLE,
   CONSTRAINT `fk_feedback_Pessoa1`
@@ -233,48 +245,61 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
 -- INSERÇÕES NO BANCO
-INSERT INTO app_salon.pessoa(nome, endereco, email, senha, avatar)
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
 values(
-	"Ivan",
     true,
+	"Ivan",
     "Rua Borginho, 2021",
     "ivan@appsalon.com.br",
     "$2b$10$VIKWljgW7r133m2vHdHyuOqBK8myHSi1KN9LED3HC7Lq8Bhc5s1Oq",
     null
 );
 
-INSERT INTO app_salon.pessoa(nome, endereco, email, senha, avatar)
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
 values(
-	"Ingrid",
     false,
+	"Ingrid",
     "Sitio Onde Judas Perdeu as Botas",
     "ingridmariza@gmail.com",
     "$2b$10$eMHdZ9v66Qf4WnjKdkaUQO8nSpdSW5528qTO886wh9b9FAZlbXzvG",
     null
 );
 
-INSERT INTO app_salon.pessoa(nome, endereco, email, senha, avatar)
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
 values(
-	"Welenilson",
     false,
+	"Welenilson",
     "Riachinho, Ceara, Brasil",
     "we.marketing@live.com",
     "$2b$10$gP05YWNVDnWBPzqPnKXXq.p0j3sU9Lw1K4oZsU0skx06j0on6DLwe",
     null
 );
 
-INSERT INTO app_salon.pessoa(nome, endereco, email, senha, avatar)
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
 values(
-	"Ingride",
     false,
+	"Ingride",
     "Sitio Onde Judas Perdeu as Botas",
     "ingride@gmail.com",
     "$2b$10$YwVKzCkl6DPFb6fOp7/3buIq/Ukd3ak1N7e2daFh8hX7k.cdd0o6i",
     null
 );
 
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
+values(
+    true,
+	"Blind",
+    "Varzea Alegre, Ceara, Brasil",
+    "blind@appsalon.com.br",
+    "$2b$10$JMOIfVm96D6R7iZO2c0znuh4IKNs4I0SUvFR4IB5CplfewjNjtjLu",
+    null
+);
+
 INSERT INTO app_salon.funcionario(id, especializacao)
 values(1, "Barbeiro");
+
+INSERT INTO app_salon.funcionario(id, especializacao)
+values(5, "Cabelereiro");
 
 INSERT INTO app_salon.cliente(id)
 values(2);
@@ -286,4 +311,502 @@ INSERT INTO app_salon.cliente(id)
 values(4);
 
 INSERT INTO app_salon.empresa(nome)
-values("AS INGRID'S SALÃO")
+values("AS INGRID'S SALÃO");
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Moicano",
+    "Corte masculino",
+    "Cabelereiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Undercut",
+    "Corte masculino",
+    "Cabelereiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Chanel",
+    "Corte masculino",
+    "Cabelereiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Especial da casa",
+    "Corte masculino",
+    "Cabelereiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Feita",
+    "Barba premium",
+    "Barbeiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Por fazer",
+    "Barba comum",
+    "Barbeiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Bigode",
+    "Barba somente bigode",
+    "Barbeiro"
+);
+
+INSERT INTO app_salon.servicos(nome, descricao, tipoDeServico)
+values(
+	"Especial da casa",
+    "Barba estilizada",
+    "Barbeiro"
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	1,
+    5
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	2,
+    5
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	3,
+    5
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	4,
+    5
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	5,
+    1
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	6,
+    1
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	7,
+    1
+);
+
+INSERT INTO app_salon.servicos_funcionario(servico, funcionario)
+values(
+	8,
+    1
+);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 1, 10.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 2, 15.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 3, 10.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 4, 20.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 5, 10.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 6, 5.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 7, 5.00);
+
+INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
+values(1, 8, 15.00);
+
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, minuto, comentario)
+VALUES(4, 5, "Moicano", 10.00, "2021-09-23", 9, 30, "Profissional atencioso e habilidoso. Eu confio!");
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-01", "16:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-02", "16:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-03", "16:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-04", "16:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-05", "16:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-06", "16:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "7:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "7:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "8:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "8:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "9:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "9:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "10:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "10:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "11:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "13:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "13:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "14:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "14:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "15:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "15:30", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "16:00", true, 1);
+
+INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
+VALUES("2021-10-07", "16:30", true, 1);
+
+INSERT INTO app_salon.agendamento
+VALUES(2021000001, 2, 1, 2, 5, false);
+
+UPDATE app_salon.agenda
+SET temVaga = false
+WHERE id=1;
+
+INSERT INTO app_salon.favoritos(cliente, servico)
+VALUES(2, 2);
