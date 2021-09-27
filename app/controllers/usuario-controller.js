@@ -21,7 +21,7 @@ exports.getUsuario = async (req, res, next) => {
         const query = `SELECT * FROM pessoa WHERE id=?;`;
         const resultado = await mysql.execute(query, [req.params.id]);
         if (resultado.length == 0) {
-            res.status(404).send({ mensagem: 'Sem resultados!' });
+            res.status(404).send({ response: false, mensagem: 'Sem resultados!' });
         } else {
             if (resultado[0].isAdm) {
                 try {
@@ -33,9 +33,9 @@ exports.getUsuario = async (req, res, next) => {
                       ON Fu.id=Pe.id;`;
                     const result = await mysql.execute(query2, [req.params.id]);
 
-                    return res.status(200).send({ response: result });
+                    return res.status(200).send({ response: true, dados: result });
               } catch (error) {
-                  return res.status(500).send({ error: error })
+                  return res.status(500).send({ response: false, error: error })
               }
             } else {
                 try {
@@ -47,14 +47,14 @@ exports.getUsuario = async (req, res, next) => {
                       ON Cl.id=Pe.id;`;
                     const result = await mysql.execute(query3, [req.params.id]);
 
-                    return res.status(200).send({ response: result });
+                    return res.status(200).send({ response: true, dados: result });
                 } catch (error) {
-                    return res.status(500).send({ error: error })
+                    return res.status(500).send({ response: false, error: error })
                 }
             }
         }
     } catch (error) {
-        return res.status(500).send({ error: error });
+        return res.status(500).send({ response: false, error: error });
     }
 };
 
@@ -64,7 +64,7 @@ exports.setUsuario = async (req, res, next) => {
       const results = await mysql.execute(query, [req.body.email]);
 
       if (results.length > 0) {
-          res.status(409).send({ mensagem: 'Usuário já cadastrado!' });
+          res.status(409).send({ response: false, mensagem: 'Usuário já cadastrado!' });
       } else {
           try {
               const hash = await bcrypt.hash(req.body.senha, 10);
@@ -116,6 +116,7 @@ exports.setUsuario = async (req, res, next) => {
                                   }
                               );
                               response = {
+                                  response: true,
                                   data: {
                                     id: resposta[0].id,
                                     privilegio: resposta[0].isAdm,
@@ -130,7 +131,7 @@ exports.setUsuario = async (req, res, next) => {
                               return res.status(201).send(response);
                           } catch (error) {
                               res.status(500).send({
-                                  error: error, response: null
+                                  error: error, response: false
                               });
                           }
                       } else {
@@ -156,6 +157,7 @@ exports.setUsuario = async (req, res, next) => {
                                   }
                               );
                               response = {
+                                response: true,
                                 data: {
                                   id: resposta[0].id,
                                   privilegio: resposta[0].isAdm,
@@ -168,21 +170,21 @@ exports.setUsuario = async (req, res, next) => {
                               }
                               return res.status(201).send(response);
                           } catch (error) {
-                              res.status(500).send({ error: error, response: null });
+                              res.status(500).send({ error: error, response: false });
                           }
                       }
                   } catch (error) {
-                      return res.status(500).send({ error: error });
+                      return res.status(500).send({ response: false, error: error });
                   }
               } catch (error) {
-                  res.status(500).send({ error: error, response: null });
+                  res.status(500).send({ error: error, response: false });
               }
           } catch (errBcrypt) {
-              return res.status(500).send({ error: errBcrypt });
+              return res.status(500).send({ response: false, error: errBcrypt });
           }
       }
     } catch (error) {
-        return res.status(500).send({ error: error });
+        return res.status(500).send({ response: false, error: error });
     }
 };
 
@@ -191,7 +193,7 @@ exports.updateUsuario = async (req, res, next) => {
       const query = `SELECT * FROM pessoa WHERE id=?;`;
       const results = await mysql.execute(query, [req.params.id]);
       if (results.length == 0) {
-          res.status(406).send({ mensagem: 'Acesso negado!' });
+          res.status(406).send({ response: false, mensagem: 'Acesso negado!' });
       } else {
           if (results[0].isAdm && (req.usuario.id == results[0].id)) {
               try {
@@ -214,6 +216,7 @@ exports.updateUsuario = async (req, res, next) => {
                           ]
                       );
                       response = {
+                          response: true,
                           mensagem: 'Usuário atualizado com sucesso!',
                       }
                       try {
@@ -234,16 +237,16 @@ exports.updateUsuario = async (req, res, next) => {
 
                               return res.status(201).send(response);
                           } catch (error) {
-                              res.status(500).send({ error: error, response: null });
+                              res.status(500).send({ error: error, response: false });
                           }
                       } catch (error) {
-                          return res.status(500).send({ error: error });
+                          return res.status(500).send({ response: false, error: error });
                       }
                   } catch (error) {
-                      res.status(500).send({ error: error, response: null });
+                      res.status(500).send({ error: error, response: false });
                   }
               } catch (errBcrypt) {
-                  return res.status(500).send({ error: errBcrypt });
+                  return res.status(500).send({ response: false, error: errBcrypt });
               }
           } else if (!results[0].isAdm && (req.usuario.id == results[0].id)) {
               try {
@@ -266,6 +269,7 @@ exports.updateUsuario = async (req, res, next) => {
                           ]
                       );
                       response = {
+                          response: true,
                           mensagem: 'Usuário atualizado com sucesso!',
                       }
                       try {
@@ -289,20 +293,20 @@ exports.updateUsuario = async (req, res, next) => {
 
                           }
                       } catch (error) {
-                          return res.status(500).send({ error: error });
+                          return res.status(500).send({ response: false, error: error });
                       }
                   } catch (error) {
-                      res.status(500).send({ error: error, response: null });
+                      res.status(500).send({ error: error, response: false });
                   }
               } catch (errBcrypt) {
-                  return res.status(500).send({ error: errBcrypt });
+                  return res.status(500).send({ response: false, error: errBcrypt });
               }
           } else {
-              return res.status(406).send({ mensagem: 'Acesso negado!!!' });
+              return res.status(406).send({ response: false, mensagem: 'Acesso negado!!!' });
           }
       }
   } catch (error) {
-      return res.status(500).send({ error: error });
+      return res.status(500).send({ response: false, error: error });
   }
 };
 
@@ -311,7 +315,7 @@ exports.deleteUsuario = async (req, res, next) => {
       const query = `SELECT * FROM pessoa WHERE id=?;`;
       const results = await mysql.execute(query, [req.params.id]);
       if (results.length == 0) {
-          return res.status(406).send({ mensagem: 'Acesso negado!' });
+          return res.status(406).send({ response: false, mensagem: 'Acesso negado!' });
       } else {
           if (results[0].isAdm && (req.usuario.id === results[0].id)) {
               try {
@@ -320,6 +324,7 @@ exports.deleteUsuario = async (req, res, next) => {
                     const query2 = `DELETE FROM funcionario WHERE id = ?;`;
                     const resultado = await mysql.execute(query2, [req.params.id]);
                     response = {
+                        response: true,
                         mensagem: 'Usuário excluído com sucesso!'
                     }
                     try {
@@ -328,13 +333,13 @@ exports.deleteUsuario = async (req, res, next) => {
 
                         return res.status(202).send(response);
                     } catch (error) {
-                        return res.status(500).send({ error: error });
+                        return res.status(500).send({ response: false, error: error });
                     }
                   } catch (error) {
-                      return res.status(500).send({ error: error });
+                      return res.status(500).send({ response: false, error: error });
                   }
               } catch (errBcrypt) {
-                  return res.status(500).send({ error: errBcrypt });
+                  return res.status(500).send({ response: false, error: errBcrypt });
               }
           } else if (!results[0].isAdm && req.usuario.id==results[0].id) {
               try {
@@ -343,6 +348,7 @@ exports.deleteUsuario = async (req, res, next) => {
                     const query2 = `DELETE FROM cliente WHERE id = ?;`;
                     const resultado = await mysql.execute(query2, [req.params.id]);
                     response = {
+                        response: true,
                         mensagem: 'Usuário excluído com sucesso!'
                     }
                     try {
@@ -351,19 +357,19 @@ exports.deleteUsuario = async (req, res, next) => {
 
                         return res.status(202).send(response);
                     } catch (error) {
-                        return res.status(500).send({ error: error });
+                        return res.status(500).send({ response: false, error: error });
                     }
                   } catch (error) {
-                      return res.status(500).send({ error: error });
+                      return res.status(500).send({ response: false, error: error });
                   }
               } catch (errBcrypt) {
-                  return res.status(500).send({ error: errBcrypt });
+                  return res.status(500).send({ response: false, error: errBcrypt });
               }
           } else {
-              return res.status(406).send({ mensagem: 'Acesso negado!!!' });
+              return res.status(406).send({ response: false, mensagem: 'Acesso negado!!!' });
           }
       }
   } catch (error) {
-      return res.status(500).send({ error: error });
+      return res.status(500).send({ response: false, error: error });
   }
 };

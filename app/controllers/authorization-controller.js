@@ -7,7 +7,7 @@ exports.login = async (req, res, next) => {
         const query = `SELECT * FROM pessoa WHERE email=?;`;
         const results = await mysql.execute(query, [req.body.email]);
         if (results.length < 1) {
-            return res.status(401).send({ mensagem: 'Falha na autenticação' });
+            return res.status(401).send({ response: false, mensagem: 'Falha na autenticação' });
         }
         if (results[0].isAdm) {
             try {
@@ -39,6 +39,7 @@ exports.login = async (req, res, next) => {
                                 );
                                 console.log({privilegio: results2[0].isAdm});
                                 return res.status(200).send({
+                                    response: true,
                                     data: {
                                       id: results2[0].id,
                                       privilegio: results2[0].isAdm,
@@ -51,18 +52,18 @@ exports.login = async (req, res, next) => {
                                     token: token
                                 });
                             } else {
-                                return res.status(401).send({ mensagem: 'Falha na autenticação' });
+                                return res.status(401).send({ response: false, mensagem: 'Falha na autenticação' });
                             }
                         } catch (error) {
                             //console.error(error);
-                            return res.status(401).send({ mensagem: 'Falha na autenticação' });
+                            return res.status(401).send({ response: false, mensagem: 'Falha na autenticação' });
                         }
                     } catch (errBcrypt) {
-                        return res.status(401).send({ error: errBcrypt });
+                        return res.status(401).send({ response: false, error: errBcrypt });
                     }
                 }
             } catch (error) {
-                return res.status(500).send({ error: error });
+                return res.status(500).send({ response: false, error: error });
             }
         } else {
             try {
@@ -93,6 +94,7 @@ exports.login = async (req, res, next) => {
                                 );
                                 console.log({privilegio: results3[0].isAdm});
                                 return res.status(200).send({
+                                    response: true,
                                     data: {
                                       id: results3[0].id,
                                       privilegio: results3[0].isAdm,
@@ -104,23 +106,23 @@ exports.login = async (req, res, next) => {
                                     token: token
                                 });
                             } else {
-                                return res.status(401).send({ mensagem: 'Falha na autenticação' });
+                                return res.status(401).send({ response: false, mensagem: 'Falha na autenticação' });
                             }
                         } catch (error) {
                             //console.error(error);
-                            return res.status(401).send({ mensagem: 'Falha na autenticação' });
+                            return res.status(401).send({ response: false, mensagem: 'Falha na autenticação' });
                         }
                     } catch (errBcrypt) {
                         //console.error(errBcrypt);
-                        return res.status(401).send({ error: errBcrypt });
+                        return res.status(401).send({ response: false, error: errBcrypt });
                     }
                 }
             } catch (error) {
-                return res.status(500).send({ error: error });
+                return res.status(500).send({ response: false, error: error });
             }
         }
     } catch (error) {
-        return res.status(500).send({ error: error });
+        return res.status(500).send({ response: false, error: error });
     }
 };
 
@@ -132,6 +134,7 @@ exports.refresh = async (req, res, next) => {
             if (decode) {
                 if (decode.privilegio) {
                     const json = {
+                        response: true,
                         data: {
                             id: decode.id,
                             privilegio: decode.privilegio,
@@ -146,6 +149,7 @@ exports.refresh = async (req, res, next) => {
                     return res.status(200).send(json);
                 } else {
                     const json = {
+                        response: true,
                         data: {
                             id: decode.id,
                             privilegio: decode.privilegio,
@@ -159,23 +163,24 @@ exports.refresh = async (req, res, next) => {
                     return res.status(200).send(json);
                 }
             } else {
-                return res.status(500).send({ token: false, mensagem: "Token expirado!" });
+                return res.status(500).send({ response: false, mensagem: "Token expirado!" });
             }
         } catch (error) {
-            return res.status(500).send({ token: false, error: error });
+            return res.status(500).send({ response: false, error: error });
         }
     } catch(error) {
-        return res.status(401).send({ token: false, mensagem: 'Token inválido!' });
+        return res.status(401).send({ response: false, mensagem: 'Token inválido!' });
     }
 }
 
 
 exports.verificao = async (req, res, next) => {
   try {
-      const decode = jwt.verify(req.body.token, process.env.JWT_KEY);
+      const token = req.headers.authorization.split(' ')[1];
+      const decode = jwt.verify(token, process.env.JWT_KEY);
       req.usuario = decode;
       next();
   } catch(error) {
-      return res.status(401).send({ mensagem: 'Falha na autenticação!' });
+      return res.status(401).send({ response: false, mensagem: 'Falha na autenticação!' });
   }
 }

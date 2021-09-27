@@ -20,7 +20,7 @@ const mysql = require('../database/mysql');
         ORDER BY Se.id;`;
         const resultado = await mysql.execute(query);
 
-        return res.status(200).send({response: resultado});
+        return res.status(200).send({response: true, data: resultado});
     } catch (error) {
         return res.status(500).send({ response: false, error: error});
     }
@@ -50,7 +50,7 @@ exports.getById = async (req, res, next) => {
         WHERE Services.id = ?;`;
         const resultado = await mysql.execute(query, [req.params.id]);
         if (resultado.length > 0) {
-            return res.status(200).send({ response: resultado });
+            return res.status(200).send({ response: true, data: resultado });
         } else {
             return res.status(404).send({ response: false, mensagem: "Não encontrado!" });
         }
@@ -86,7 +86,7 @@ exports.getServico = async (req, res, next) => {
         const resultado = await mysql.execute(query, [req.params.nome]);
 
         if (resultado.length > 0) {
-            return res.status(200).send({ response: resultado });
+            return res.status(200).send({ response: false, data: resultado });
         } else {
             return res.status(404).send({ response: false, error: "Not Found!" });
         }
