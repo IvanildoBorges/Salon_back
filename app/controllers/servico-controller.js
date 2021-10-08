@@ -32,9 +32,9 @@ exports.getById = async (req, res, next) => {
         const query = `
         SELECT *
         FROM (
-        	SELECT Se.*, Fu.nome AS profissional, Fu.especializacao
+        	SELECT Se.*, Fu.codFunc, Fu.nome AS profissional, Fu.especializacao
         	FROM (
-        		  SELECT Sf.servico, F.nome, F.especializacao
+        		  SELECT Sf.servico, F.id AS codFunc, F.nome, F.especializacao
         		  FROM servicos_funcionario AS Sf
         		  INNER JOIN (SELECT pessoa.nome, funcionario.id, funcionario.especializacao FROM pessoa, funcionario WHERE pessoa.id=funcionario.id) AS F
         		  ON Sf.funcionario = F.id
@@ -275,7 +275,7 @@ exports.deleteServico = async (req, res, next) => {
                             const query2 = `DELETE FROM servicos WHERE id = ?;`;
                             const resposta = await mysql.execute(query2, [resultado[0].id]);
 
-                            return res.status(200).send({ response: true, mensagem: "Serviço excluído!" });
+                            return res.status(202).send({ response: true, mensagem: "Serviço excluído!" });
                         } catch (err) {
                             return res.status(500).send({ response: false, mensagem: "Erro ao excluír serviço: "+err });
                         }

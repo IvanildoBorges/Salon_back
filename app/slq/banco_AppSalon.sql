@@ -227,8 +227,7 @@ CREATE TABLE IF NOT EXISTS `app_salon`.`feedback` (
   `servico` VARCHAR(45) NOT NULL,
   `preco` FLOAT NOT NULL,
   `data` DATE NOT NULL,
-  `hora` INT NOT NULL,
-  `minuto` INT NOT NULL,
+  `hora` TIME NOT NULL,
   `comentario` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`, `Pessoa_id`),
   INDEX `fk_feedback_Pessoa1_idx` (`Pessoa_id` ASC) VISIBLE,
@@ -295,6 +294,36 @@ values(
     null
 );
 
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
+values(
+    false,
+	"Ellen",
+    "Eusébio, Ceara, Brasil",
+    "ellen.maria@gmail.com",
+    "$2b$10$j/aJAgqTEUx5jCf3lt4q3eU0kGCfTUOSq.qSiUOiIQCS7QBG9FBku",
+    null
+);
+
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
+values(
+    false,
+	"Aline",
+    "Sitio Chico",
+    "aline.htinha.fiuza@gmail.com",
+    "$2b$10$j/aJAgqTEUx5jCf3lt4q3eU0kGCfTUOSq.qSiUOiIQCS7QBG9FBku",
+    null
+);
+
+INSERT INTO app_salon.pessoa(isAdm, nome, endereco, email, senha, avatar)
+values(
+    false,
+	"Marisergio",
+    "Cedro, Ceará, Brasil",
+    "marisergio@ifce.edu.br",
+    "$2b$10$PQLTdQlFccpL6yA/awrqPODlCxAnGw4CnkC9LrQaI2kng2fMkwl1u",
+    null
+);
+
 INSERT INTO app_salon.funcionario(id, especializacao)
 values(1, "Barbeiro");
 
@@ -309,6 +338,15 @@ values(3);
 
 INSERT INTO app_salon.cliente(id)
 values(4);
+
+INSERT INTO app_salon.cliente(id)
+values(6);
+
+INSERT INTO app_salon.cliente(id)
+values(7);
+
+INSERT INTO app_salon.cliente(id)
+values(8);
 
 INSERT INTO app_salon.empresa(nome)
 values("AS INGRID'S SALÃO");
@@ -441,8 +479,23 @@ values(1, 7, 5.00);
 INSERT INTO app_salon.empresa_servicos(empresa, servico, valor)
 values(1, 8, 15.00);
 
-INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, minuto, comentario)
-VALUES(4, 5, "Moicano", 10.00, "2021-09-23", 9, 30, "Profissional atencioso e habilidoso. Eu confio!");
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, comentario)
+VALUES(4, 5, "Moicano", 10.00, "2021-09-23", "09:30", "Profissional atencioso e habilidoso. Eu confio!");
+
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, comentario)
+VALUES(7, 5, "Franja", 10.00, "2021-09-27", "08:30", "SIMPLESMENTE O MELHOR! Super atencioso, rápido e profissional, SUPER RECOMENDO!");
+
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, comentario)
+VALUES(2, 5, "Franja", 15.00, "2021-09-23", "08:30", "RECOMENDO BLIND CABELEREIRO O MELHOR!");
+
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, comentario)
+VALUES(3, 1, "Bigode", 5.00, "2021-09-23", "10:30", "Recomendo!");
+
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, comentario)
+VALUES(4, 1, "Especial da casa", 15.00, "2021-09-23", "07:00", "Super recomendo este profissional!");
+
+INSERT INTO app_salon.feedback(Pessoa_id, funcionario, servico, preco, data, hora, comentario)
+VALUES(6, 5, "Franja", 10.00, "2021-09-23", "07:30", "Super profissional, trata bem e rápido. AMEI!!!");
 
 INSERT INTO app_salon.agenda(data, hora, temVaga, empresa)
 VALUES("2021-10-01", "7:00", true, 1);
