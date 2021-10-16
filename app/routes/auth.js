@@ -6,7 +6,6 @@ const router = express.Router();
 const LoginController = require('../controllers/authorization-controller');
 
 router.post('/login', LoginController.login);
-
 router.post('/refresh', LoginController.refresh);
 
 //Exportando a rota

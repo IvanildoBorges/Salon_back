@@ -80,13 +80,48 @@ exports.getServico = async (req, res, next) => {
            	ON Se.id = Fu.servico
                ORDER BY id
            ) AS Services
-           WHERE Services.nome LIKE "%"?"%"
-           ORDER BY Services.nome ASC;`;
+           WHERE Services.especializacao=?
+           ORDER BY Services.id ASC;`;
 
         const resultado = await mysql.execute(query, [req.params.nome]);
 
         if (resultado.length > 0) {
-            return res.status(200).send({ response: false, data: resultado });
+            return res.status(200).send({ response: true, data: resultado });
+        } else {
+            return res.status(404).send({ response: false, error: "Not Found!" });
+        }
+    } catch (error) {
+        return res.status(500).send({ response: false, error: error });
+    }
+};
+
+exports.getByName = async (req, res, next) => {
+    try {
+        const query = `
+           SELECT *
+           FROM (
+           	SELECT Se.*, Fu.nome AS profissional, Fu.especializacao
+           	FROM (
+           		  SELECT Sf.servico, F.nome, F.especializacao
+           		  FROM servicos_funcionario AS Sf
+           		  INNER JOIN (SELECT pessoa.nome, funcionario.id, funcionario.especializacao FROM pessoa, funcionario WHERE pessoa.id=funcionario.id) AS F
+           		  ON Sf.funcionario = F.id
+           	) AS Fu
+           	INNER JOIN (
+           		SELECT S.id, S.nome, S.descricao,  Es.valor
+           		FROM (SELECT * FROM empresa_servicos WHERE empresa = 1) AS Es, servicos AS S
+           		WHERE Es.servico=S.id
+           	)  AS Se
+           	ON Se.id = Fu.servico
+               ORDER BY id
+           ) AS Services
+           WHERE Services.nome=?
+           ORDER BY Services.id ASC;`;
+
+        const resultado = await mysql.execute(query, [req.params.nome]);
+
+        if (resultado.length > 0) {
+            return res.status(200).send({ response: true, data: resultado });
         } else {
             return res.status(404).send({ response: false, error: "Not Found!" });
         }

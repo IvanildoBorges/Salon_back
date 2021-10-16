@@ -1,6 +1,7 @@
 const mysql = require('../database/mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const key = require('../config/variaveis');
 
 exports.login = async (req, res, next) => {
     try {
@@ -32,7 +33,7 @@ exports.login = async (req, res, next) => {
                                       endereco: results2[0].endereco,
                                       avatar: results2[0].avatar,
                                     },
-                                    process.env.JWT_KEY,
+                                    key.secret.JWT_KEY,
                                     {
                                       expiresIn: "5 days"
                                     }
@@ -87,7 +88,7 @@ exports.login = async (req, res, next) => {
                                       endereco: results3[0].endereco,
                                       avatar: results3[0].avatar,
                                     },
-                                    process.env.JWT_KEY,
+                                    key.secret.JWT_KEY,
                                     {
                                       expiresIn: "5 days"
                                     }
@@ -129,7 +130,7 @@ exports.login = async (req, res, next) => {
 exports.refresh = async (req, res, next) => {
     try {
         const token = req.body.token;
-        const decode = jwt.verify(token, process.env.JWT_KEY);
+        const decode = jwt.verify(token, key.secret.JWT_KEY);
         try {
             if (decode) {
                 if (decode.privilegio) {
@@ -177,7 +178,7 @@ exports.refresh = async (req, res, next) => {
 exports.verificao = async (req, res, next) => {
   try {
       const token = req.headers.authorization.split(' ')[1];
-      const decode = jwt.verify(token, process.env.JWT_KEY);
+      const decode = jwt.verify(token, key.secret.JWT_KEY);
       req.usuario = decode;
       next();
   } catch(error) {

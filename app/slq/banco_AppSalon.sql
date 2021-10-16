@@ -161,7 +161,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `app_salon`.`Empresa_Servicos` (
   `empresa` INT NOT NULL,
   `servico` INT NOT NULL,
-  `valor` FLOAT NOT NULL,
+  `valor` FLOAT(7,2) NOT NULL,
   PRIMARY KEY (`empresa`, `servico`),
   INDEX `fk_Empresa_has_Servicos_Servicos1_idx` (`servico` ASC) VISIBLE,
   INDEX `fk_Empresa_has_Servicos_Empresa1_idx` (`empresa` ASC) VISIBLE,
@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `app_salon`.`feedback` (
   `Pessoa_id` INT NOT NULL,
   `funcionario` VARCHAR(50) NOT NULL,
   `servico` VARCHAR(45) NOT NULL,
-  `preco` FLOAT NOT NULL,
+  `preco` FLOAT(7,2) NOT NULL,
   `data` DATE NOT NULL,
   `hora` TIME NOT NULL,
   `comentario` VARCHAR(100) NOT NULL,
