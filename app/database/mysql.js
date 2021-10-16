@@ -2,11 +2,11 @@ const mysql = require("mysql");
 const envs = require('../config/variaveis');
 
 const pool = mysql.createPool({
-    "connectionLimit": 1000,
+    "connectionLimit": 100,
     "user": envs.mysql.usuario,
     "password": envs.mysql.senha,
     "database": envs.mysql.db,
-    "host": envs.mysql.host,
+    "host": process.env.HOST || envs.mysql.host,
     "port": envs.mysql.porta
 });
 
