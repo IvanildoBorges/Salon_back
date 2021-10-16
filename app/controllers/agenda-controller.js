@@ -12,7 +12,7 @@ const mysql = require('../database/mysql');
  };
 
  exports.setAgenda = async (req, res, next) => {
-
+	
  };
 
  exports.updateAgenda = async (req, res, next) => {
