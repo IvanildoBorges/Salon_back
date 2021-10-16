@@ -4,9 +4,9 @@ exports.secret = {
 };
 
 exports.mysql = {
-  usuario: "bf5ad43f3ba514",
-  senha: "78551aae",
-  db: "heroku_b63944b84d04d53",
-  host: "us-cdbr-east-04.cleardb.com",
+  usuario: "root",
+  senha: "root",
+  db: "app_salon",
+  host: "localhost",
   porta: 3306
 };
