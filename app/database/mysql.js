@@ -3,11 +3,11 @@ const envs = require('../config/variaveis');
 
 const pool = mysql.createPool({
     "connectionLimit": 100,
-    "user": envs.mysql.usuario,
-    "password": envs.mysql.senha,
-    "database": envs.mysql.db,
+    "user": envs.mysql.usuario || process.env.USER,
+    "password": envs.mysql.senha || process.PASSWORD,
+    "database": envs.mysql.db || process.env.DATABASE,
     "host": process.env.HOST || envs.mysql.host,
-    "port": envs.mysql.porta
+    "port": envs.mysql.porta || process.env.PORT
 });
 
 exports.execute = (query, params=[]) => {
