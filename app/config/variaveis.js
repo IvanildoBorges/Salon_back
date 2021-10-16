@@ -5,7 +5,7 @@ exports.secret = {
 
 exports.mysql = {
   usuario: "root",
-  senha: "maru2018fsb",
+  senha: "batatinhafds123",
   db: "app_salon",
   host: "localhost",
   porta: 3306
