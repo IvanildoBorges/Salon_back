@@ -8,7 +8,7 @@ const UsuarioController = require('../controllers/usuario-controller');
 
 //rotas usuario
 router.post('/cadastro', UsuarioController.setUsuario);
-router.get('/:id', UsuarioController.getUsuario);
+router.get('/user/:id', UsuarioController.getUsuario);
 router.get('/', UsuarioController.getUsuarios);
 router.put('/atualizar/:id', authentic.verificao, UsuarioController.updateUsuario);
 router.delete('/delete/:id', authentic.verificao, UsuarioController.deleteUsuario);

@@ -52,7 +52,7 @@ exports.getById = async (req, res, next) => {
         if (resultado.length > 0) {
             return res.status(200).send({ response: true, data: resultado });
         } else {
-            return res.status(404).send({ response: false, mensagem: "Não encontrado!" });
+            return res.status(404).send({ response: false, error: "Não encontrado!" });
         }
 
     } catch (error) {
@@ -136,7 +136,7 @@ exports.setServico = async (req, res, next) => {
         const query = `SELECT * FROM servicos WHERE nome=?;`;
         const resultado = await mysql.execute(query, [req.body.nome]);
         if (resultado.length > 0) {
-            return res.status(409).send({ response: false, mensagem: "Serviço já cadastrado!" });
+            return res.status(409).send({ response: false, error: "Serviço já cadastrado!" });
         } else {
             try {
                 const query1 = `SELECT * FROM funcionario WHERE id = ?;`;
@@ -180,22 +180,22 @@ exports.setServico = async (req, res, next) => {
                                             req.body.funcionario
                                           ]
                                       );
-                                      return res.status(200).send({ response: true, mensagem: "Serviço cadastrado!" });
+                                      return res.status(200).send({ response: true, data: "Serviço cadastrado!" });
                                   } catch (err) {
-                                      return res.status(500).send({ response: false, mensagem: "Erro servico_funcionario: "+err });
+                                      return res.status(500).send({ response: false, error: "Erro servico_funcionario: "+err });
                                   }
                               } catch (error) {
-                                  return res.status(500).send({ response: false, mensagem: "Erro empresa_serviço: "+error });
+                                  return res.status(500).send({ response: false, error: "Erro empresa_serviço: "+error });
                               }
                           }
                         } catch (err) {
-                            return res.status(500).send({ response: false, err: err });
+                            return res.status(500).send({ response: false, error: err });
                         }
                     } catch (e) {
-                        return res.status(500).send({ response: false, mensagem: "Erro ao inserir serviço!" });
+                        return res.status(500).send({ response: false, error: "Erro ao inserir serviço!" });
                     }
                 } else {
-                    return res.status(406).send({ response: false, mensagem: 'Acesso negado!' });
+                    return res.status(406).send({ response: false, error: 'Acesso negado!' });
                 }
             } catch (e) {
                 return res.status(500).send({ response: false, error: e });
@@ -212,7 +212,7 @@ exports.updateServico = async (req, res, next) => {
         const query = `SELECT * FROM servicos WHERE id=?;`;
         const resultado = await mysql.execute(query, [req.params.id]);
         if (resultado.length == 0) {
-            return res.status(404).send({ response: false, mensagem: "NOT FOUND!" });
+            return res.status(404).send({ response: false, error: "NOT FOUND!" });
         } else {
             try {
                 const parametro = req.usuario.id;
@@ -263,22 +263,22 @@ exports.updateServico = async (req, res, next) => {
                                             req.params.id
                                           ]
                                       );
-                                      return res.status(200).send({ response: true, mensagem: "Serviço Atualizado!" });
+                                      return res.status(200).send({ response: true, data: "Serviço Atualizado!" });
                                   } catch (err) {
-                                      return res.status(500).send({ response: false, mensagem: "Erro servico_funcionario: "+err });
+                                      return res.status(500).send({ response: false, error: "Erro servico_funcionario: "+err });
                                   }
                               } catch (error) {
-                                  return res.status(500).send({ response: false, mensagem: "Erro empresa_serviço: "+error });
+                                  return res.status(500).send({ response: false, error: "Erro empresa_serviço: "+error });
                               }
                           }
                         } catch (err) {
-                            return res.status(500).send({ response: false, err: err });
+                            return res.status(500).send({ response: false, error: err });
                         }
                     } catch (e) {
-                        return res.status(500).send({ response: false, mensagem: "Erro ao atualizar serviço!" });
+                        return res.status(500).send({ response: false, error: "Erro ao atualizar serviço!" });
                     }
                 } else {
-                    return res.status(406).send({ response: false, mensagem: 'Acesso negado!' });
+                    return res.status(406).send({ response: false, error: 'Acesso negado!' });
                 }
             } catch (e) {
                 return res.status(500).send({ response: false, error: e });
@@ -295,7 +295,7 @@ exports.deleteServico = async (req, res, next) => {
         const query = `SELECT * FROM servicos WHERE id=?`;
         const resultado = await mysql.execute(query, [req.params.id]);
         if (resultado.length == 0) {
-            return res.status(404).send({ response: false, mensagem: "Not Found!" });
+            return res.status(404).send({ response: false, error: "Not Found!" });
         } else {
             const query1 = `SELECT * FROM funcionario WHERE id = ?;`;
             const result = await mysql.execute(query1, [req.usuario.id]);
@@ -310,18 +310,18 @@ exports.deleteServico = async (req, res, next) => {
                             const query2 = `DELETE FROM servicos WHERE id = ?;`;
                             const resposta = await mysql.execute(query2, [resultado[0].id]);
 
-                            return res.status(202).send({ response: true, mensagem: "Serviço excluído!" });
+                            return res.status(202).send({ response: true, data: "Serviço excluído!" });
                         } catch (err) {
-                            return res.status(500).send({ response: false, mensagem: "Erro ao excluír serviço: "+err });
+                            return res.status(500).send({ response: false, error: "Erro ao excluír serviço: "+err });
                         }
                     } catch (error) {
-                        return res.status(500).send({ response: false, mensagem: "Erro servico_funcionario: "+error });
+                        return res.status(500).send({ response: false, error: "Erro servico_funcionario: "+error });
                     }
                 } catch (e) {
-                    return res.status(500).send({ response: false, mensagem: "Erro empresa_serviço: "+e });
+                    return res.status(500).send({ response: false, error: "Erro empresa_serviço: "+e });
                 }
             } else {
-                return res.status(406).send({ response: false, mensagem: 'Acesso negado!' });
+                return res.status(406).send({ response: false, error: 'Acesso negado!' });
             }
         }
     } catch (error) {

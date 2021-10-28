@@ -3,6 +3,9 @@ const app = express();                          //Cria uma instancia do express 
 const morgan = require("morgan");               //Importa a biblioteca morga para dar um callback
 
 //importandos as rotas
+const rotaHome = require('./routes/home');
+const rotaAgendar = require('./routes/agendamento');
+const rotaAgenda = require('./routes/agenda');
 const rotaFeedback = require('./routes/feedback');
 const rotaUsuario = require('./routes/usuario');
 const rotaServicos = require('./routes/servicos');
@@ -34,6 +37,9 @@ app.use((req, res, next) => {
 });
 
 //Acionando as rotas
+app.use('/', rotaHome);
+app.use('/agendamento', rotaAgendar);
+app.use('/agenda', rotaAgenda);
 app.use('/feedback', rotaFeedback);
 app.use('/usuario', rotaUsuario);
 app.use('/servicos', rotaServicos);

@@ -7,8 +7,9 @@ const authentic = require('../controllers/authorization-controller');
 const AgendaController = require('../controllers/agenda-controller');
 
 //rotas agenda
-router.post('/cadastro', authentic.verificao, AgendaController.setAgenda);
-router.get('/', authentic.verificao, AgendaController.getAgenda);
+router.post('/cadastrar', authentic.verificao, AgendaController.setAgenda);
+router.get('/', authentic.verificao, AgendaController.getAgendas);
+router.get('/buscar/:id', authentic.verificao, AgendaController.getAgenda);
 router.put('/atualizar/:id', authentic.verificao, AgendaController.updateAgenda);
 router.delete('/delete/:id', authentic.verificao, AgendaController.deleteAgenda);
 

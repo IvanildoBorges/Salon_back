@@ -42,7 +42,7 @@ const mysql = require('../database/mysql');
               );
               return res.status(200).send({ response: true, data: "Avaliação enviada!" });
           } else {
-              return res.status(406).send({ response: false, data: "Acesso negado!" });
+              return res.status(406).send({ response: false, error: "Acesso negado!" });
           }
       } catch (error) {
           return res.status(500).send({ response: false, error: error });
@@ -60,10 +60,10 @@ const mysql = require('../database/mysql');
                   const result2 = await mysql.execute(query2, [req.body.comentario, req.params.id]);
                   return res.status(201).send({ response: true, data: "Avaliação Atualizada!" });
               } else {
-                  return res.status(406).send({ response: false, data: "Acesso negado!" });
+                  return res.status(406).send({ response: false, error: "Acesso negado!" });
               }
           } else {
-              return res.status(404).send({ response: false, data: "Not Found!" });
+              return res.status(404).send({ response: false, error: "Not Found!" });
           }
        } catch (error) {
           return res.status(500).send({ response: false, error: error });
